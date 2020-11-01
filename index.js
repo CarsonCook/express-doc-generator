@@ -5,10 +5,10 @@ const projectDescription = 'My project';
 const tag = '@express-doc-generator';
 const expressObject = 'app';
 const requestObject = 'req';
-const httpMethods = ['get', 'post', 'put', 'delete'];
-const requestFields = ['body', 'params', 'query'];
+const httpMethods = ['get', 'post', 'put', 'delete']; // HTTP methods to parse out of routing of Express app
+const requestFields = ['body', 'params', 'query']; // Request fields to parse out of routing of Express app
 const startTag = 'start';
-const descriptionTag = 'description ';
+const descriptionTag = 'description '; // expect a space between 'description' and the text
 const endTag = 'end';
 const anyChar = '[\\s\\S]';
 const files = [
@@ -35,11 +35,12 @@ files.forEach(file => {
     for (const match of matches) {
         const {groups: {api}} = match;
 
+        // Capture API endpoint
         const {groups: {method}} = api.match(methodRegex);
         const route = 'route';
         fs.appendFileSync(outputFile, `##${method.toUpperCase()} ${route}\n`);
 
-        // Capture API information
+        // Capture API description
         const descriptionMatch = api.match(descriptionRegex);
         if (descriptionMatch) {
             const {groups: {description}} = descriptionMatch;
