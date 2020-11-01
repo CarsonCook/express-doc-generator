@@ -4,8 +4,49 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint \"**/*.js\" --fix"
   },
   "keywords": [],
   "author": "Carson Cook",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1",
+    "eslint-config-google": "^0.14.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "commonjs": true,
+      "es2020": true,
+      "node": true,
+      "mocha": true
+    },
+    "extends": [
+      "google",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "sourceType": "module"
+    },
+    "rules": {
+      "require-jsdoc": 0,
+      "indent": [
+        "error",
+        4
+      ],
+      "max-len": [
+        "error",
+        {
+          "code": 170
+        }
+      ],
+      "no-control-regex": "off"
+    },
+    "ignorePatterns": [
+      "./**/node_modules/**/*"
+    ]
+  }
 }
