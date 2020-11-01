@@ -1,2 +1,4 @@
 node_modules
-./express-doc-generator.json
+.idea
+
+express-doc-generator.json

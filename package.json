@@ -9,8 +9,7 @@
   "keywords": [],
   "author": "Carson Cook",
   "license": "MIT",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "eslint": "^7.12.1",
     "eslint-config-google": "^0.14.0"
