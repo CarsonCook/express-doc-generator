@@ -1,22 +1,32 @@
 const fs = require('fs');
+let configJson = {};
+try {
+    configJson = JSON.parse(fs.readFileSync('./express-doc-generator.json', 'utf8'));
+} catch (e) {
+    try {
+        configJson = JSON.parse(fs.readFileSync('./package.json', 'utf8')).expressDocGenerator || {};
+    } catch (e) {
+        console.err(`Could not read configuration file: ${e}`);
+    }
+}
 
 const projectName = 'QPlan Back End';
 const projectDescription = 'My project';
-const tag = '@express-doc-generator';
-const expressObject = 'app';
-const requestObject = 'req';
+const outputFile = 'API Documentation.md';
+const tag = configJson.tag || '@express-doc-generator';
+const expressObject = configJson.expressObject || 'app';
+const requestObject = configJson.requestObject || 'req';
 const httpMethods = ['get', 'post', 'put', 'delete']; // HTTP methods to parse out of routing of Express app
 const requestFields = ['body', 'params', 'query']; // Request fields to parse out of routing of Express app
-const startTag = 'start';
-const descriptionTag = 'description '; // expect a space between 'description' and the text
-const endTag = 'end';
+const startTag = configJson.startTag || 'start';
+const descriptionTag = configJson.descriptionTag || 'description '; // expect a space between 'description' and the text
+const endTag = configJson.endTag || 'end';
 const anyChar = '[\\s\\S]';
-const files = [
+const files = configJson.files || [
     'C:\\Users\\cookc\\Desktop\\Code\\qplan\\back-end\\server\\routing\\coursesRouting.js',
     'C:\\Users\\cookc\\Desktop\\Code\\qplan\\back-end\\server\\routing\\gradRequirementsRouting.js',
 ];
 
-const outputFile = 'API Documentation.md';
 fs.writeFileSync(outputFile, `#${projectName}\n${projectDescription}\n`); // Write to file instead of append to overwrite past data
 
 files.forEach(file => {
@@ -67,3 +77,5 @@ files.forEach(file => {
 //TODO handle directory locations and specific files
 //TODO config for app, request body, files, matching route
 //TODO get privileges?
+//TODO after @express-api-doc start allow setting express and request object names
+//TODO handle no match cases

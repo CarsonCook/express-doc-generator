@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="08bafef7-9875-48c1-95f8-13dd0e5c300e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/express-doc-generator.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
@@ -30,12 +31,17 @@
     <auto-save>true</auto-save>
   </component>
   <component name="ProjectId" id="1jh6dr5t5eFAJar9YuH6t45nEBl" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="12.16.3" />
     <property name="javascript.nodejs.core.library.typings.version" value="12.19.3" />
@@ -81,7 +87,7 @@
       <option name="presentableId" value="Default" />
       <updated>1604244066256</updated>
       <workItem from="1604244067388" duration="10660000" />
-      <workItem from="1604271407035" duration="344000" />
+      <workItem from="1604271407035" duration="2284000" />
     </task>
     <servers />
   </component>
