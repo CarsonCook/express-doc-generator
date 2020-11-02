@@ -24,7 +24,8 @@
     "requestObject": "req",
     "startTag": "start",
     "endTag": "end",
-    "descriptionTag": "description"
+    "descriptionTag": "description",
+    "files": "C:/Users/cookc/Desktop/Code/qplan/back-end/server/routing/*Routing.js"
   },
   "eslintConfig": {
     "env": {

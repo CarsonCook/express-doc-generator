@@ -26,13 +26,18 @@ const startTag = configJson.startTag || 'start';
 const descriptionTag = configJson.descriptionTag + ' ' || 'description '; // expect a space between 'description' and the text
 const endTag = configJson.endTag || 'end';
 const anyChar = '[\\s\\S]';
-const paths = configJson.files || [
-    'C:/Users/cookc/Desktop/Code/qplan/back-end/server/routing/*Routing.js',
-];
+let globs = configJson.files;
+
+if (!globs) {
+    throw new Error('Cannot generate documentation. No glob patterns provided');
+}
+if (!Array.isArray(globs)) {
+    globs = [globs];
+}
 
 fs.writeFileSync(outputFile, `#${projectName}\n${projectDescription}\n`); // Write to file instead of append to overwrite past data
 
-paths.forEach(path => {
+globs.forEach(path => {
     const files = glob.sync(path);
 
     files.forEach(file => {
