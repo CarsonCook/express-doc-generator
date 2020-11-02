@@ -35,7 +35,7 @@ if (!Array.isArray(globs)) {
 
 fs.writeFileSync(outputFile, `#${projectName}\n${projectDescription}\n`); // Write to file instead of append to overwrite past data
 
-const apiRegex = new RegExp(`(?<api>${tag}${anyChar}*?)${tag} ${endTag}`, 'ig');
+const apiRegex = new RegExp(`(?<api>${tag}${anyChar}*?${tag} ${endTag})`, 'ig');
 const methodRegex = new RegExp(`${expressObject}\.(?<method>${httpMethods.join('|')})`, 'i');
 const descriptionRegex = new RegExp(`${tag} (?<description>${anyChar}*?)$`, 'im');
 const requestFieldsRegexes = {};
@@ -48,9 +48,8 @@ globs.forEach(path => {
 
     files.forEach(file => {
         const fileContent = fs.readFileSync(file, fsFileFormat);
-
-
         const matches = fileContent.matchAll(apiRegex);
+
         for (const match of matches) {
             const {groups: {api}} = match;
             captureEndpoint(api);
@@ -67,7 +66,9 @@ function captureEndpoint(api) {
         const {groups: {method}} = methodMatch;
         fs.appendFileSync(outputFile, `##${method.toUpperCase()} ${route}\n`);
     } else {
-        throw new Error(`Could not read HTTP method from Express Object '${expressObject}'`);
+        throw new Error(`Could not read HTTP method from Express Object '${expressObject}' for API:
+        ${api}
+        `);
     }
 }
 
@@ -80,7 +81,6 @@ function captureDescription(api) {
 }
 
 function captureRequestFields(api) {
-
     Object.keys(requestFieldsRegexes).forEach(key => {
         const matches = [...api.matchAll(requestFieldsRegexes[key])];
         if (matches.length > 0) {
@@ -94,5 +94,4 @@ function captureRequestFields(api) {
 }
 
 //TODO get privileges
-//TODO handle no match cases
 //TODO be able to inject explanation of a chosen request field - e.g. req.body.status needs an explanation that it is clear, saved, etc. - not mandatory since some names are obvious enough
