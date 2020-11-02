@@ -2,3 +2,5 @@ node_modules
 .idea
 
 express-doc-generator.json
+
+API Documentation.md
