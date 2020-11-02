@@ -15,6 +15,8 @@
     "eslint-config-google": "^0.14.0"
   },
   "expressDocGenerator": {
+    "projectName": "QPlan",
+    "projectDescription": "My project",
     "tag": "@express-doc-generator",
     "expressObject": "app",
     "requestObject": "req",

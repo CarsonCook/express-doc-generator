@@ -1,21 +1,24 @@
 const fs = require('fs');
+
+const fsFileFormat = 'utf8';
+
 let configJson = {};
 try {
-    configJson = JSON.parse(fs.readFileSync('./express-doc-generator.json', 'utf8'));
+    configJson = JSON.parse(fs.readFileSync('./express-doc-generator.json', fsFileFormat));
 } catch (e) {
     try {
-        configJson = JSON.parse(fs.readFileSync('./package.json', 'utf8')).expressDocGenerator || {};
+        configJson = JSON.parse(fs.readFileSync('./package.json', fsFileFormat)).expressDocGenerator || {};
     } catch (e) {
         console.err(`Could not read configuration file: ${e}`);
     }
 }
 
-const projectName = 'QPlan Back End';
-const projectDescription = 'My project';
-const outputFile = 'API Documentation.md';
+const projectName = configJson.projectName;
+const projectDescription = configJson.projectDescription;
+const outputFile = configJson.outputFile || 'API Documentation.md';
 const tag = configJson.tag || '@express-doc-generator';
-const expressObject = configJson.expressObject || 'asdf';
-const requestObject = configJson.requestObject || 'asdf';
+const expressObject = configJson.expressObject || 'app';
+const requestObject = configJson.requestObject || 'req';
 const httpMethods = ['get', 'post', 'put', 'delete']; // HTTP methods to parse out of routing of Express app
 const requestFields = ['body', 'params', 'query']; // Request fields to parse out of routing of Express app
 const startTag = configJson.startTag || 'start';
@@ -30,7 +33,7 @@ const files = configJson.files || [
 fs.writeFileSync(outputFile, `#${projectName}\n${projectDescription}\n`); // Write to file instead of append to overwrite past data
 
 files.forEach(file => {
-    const fileContent = fs.readFileSync(file, 'utf8');
+    const fileContent = fs.readFileSync(file, fsFileFormat);
 
     const apiRegex = new RegExp(`${tag} ${startTag}(?<api>${anyChar}*?)${tag} ${endTag}`, 'ig');
     const descriptionRegex = new RegExp(`${tag} ${descriptionTag}(?<description>${anyChar}*?)$`, 'im');
@@ -68,8 +71,6 @@ files.forEach(file => {
                 fs.appendFileSync(outputFile, '\n');
             }
         });
-
-        console.log(api);
     }
 });
 
