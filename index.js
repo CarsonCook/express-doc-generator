@@ -35,52 +35,64 @@ if (!Array.isArray(globs)) {
 
 fs.writeFileSync(outputFile, `#${projectName}\n${projectDescription}\n`); // Write to file instead of append to overwrite past data
 
+const apiRegex = new RegExp(`(?<api>${tag}${anyChar}*?)${tag} ${endTag}`, 'ig');
+const methodRegex = new RegExp(`${expressObject}\.(?<method>${httpMethods.join('|')})`, 'i');
+const descriptionRegex = new RegExp(`${tag} (?<description>${anyChar}*?)$`, 'im');
+const requestFieldsRegexes = {};
+requestFields.forEach(field => {
+    requestFieldsRegexes[field] = (new RegExp(`${requestObject}\.${field}\.(?<${field}>[\\w\\d_\\-$]*)`, 'ig'));
+});
+
 globs.forEach(path => {
     const files = glob.sync(path);
 
     files.forEach(file => {
         const fileContent = fs.readFileSync(file, fsFileFormat);
 
-        const apiRegex = new RegExp(`(?<api>${tag}${anyChar}*?)${tag} ${endTag}`, 'ig');
-        const descriptionRegex = new RegExp(`${tag} (?<description>${anyChar}*?)$`, 'im');
-        const methodRegex = new RegExp(`${expressObject}\.(?<method>${httpMethods.join('|')})`, 'i');
-        const requestFieldsRegexes = {};
-        requestFields.forEach(field => {
-            requestFieldsRegexes[field] = (new RegExp(`${requestObject}\.${field}\.(?<${field}>[\\w\\d_\\-$]*)`, 'ig'));
-        });
 
-        // Capture all APIs
         const matches = fileContent.matchAll(apiRegex);
         for (const match of matches) {
             const {groups: {api}} = match;
-
-            // Capture API endpoint
-            const {groups: {method}} = api.match(methodRegex);
-            const route = 'route';
-            fs.appendFileSync(outputFile, `##${method.toUpperCase()} ${route}\n`);
-
-            // Capture API description
-            const descriptionMatch = api.match(descriptionRegex);
-            if (descriptionMatch) {
-                const {groups: {description}} = descriptionMatch;
-                fs.appendFileSync(outputFile, `${description}\n`);
-            }
-
-            // Capture API request fields
-            Object.keys(requestFieldsRegexes).forEach(key => {
-                const matches = [...api.matchAll(requestFieldsRegexes[key])];
-                if (matches.length > 0) {
-                    fs.appendFileSync(outputFile, `###Request ${key}:\n`);
-                    for (const match of matches) {
-                        fs.appendFileSync(outputFile, `* ${match.groups[key]}\n`);
-                    }
-                    fs.appendFileSync(outputFile, '\n');
-                }
-            });
+            captureEndpoint(api);
+            captureDescription(api);
+            captureRequestFields(api);
         }
     });
 });
 
-//TODO get the route
-//TODO get privileges?
+function captureEndpoint(api) {
+    const methodMatch = api.match(methodRegex);
+    const route = 'route'; // TODO get the route
+    if (methodMatch) {
+        const {groups: {method}} = methodMatch;
+        fs.appendFileSync(outputFile, `##${method.toUpperCase()} ${route}\n`);
+    } else {
+        throw new Error(`Could not read HTTP method from Express Object '${expressObject}'`);
+    }
+}
+
+function captureDescription(api) {
+    const descriptionMatch = api.match(descriptionRegex);
+    if (descriptionMatch) {
+        const {groups: {description}} = descriptionMatch;
+        fs.appendFileSync(outputFile, `${description}\n`);
+    }
+}
+
+function captureRequestFields(api) {
+
+    Object.keys(requestFieldsRegexes).forEach(key => {
+        const matches = [...api.matchAll(requestFieldsRegexes[key])];
+        if (matches.length > 0) {
+            fs.appendFileSync(outputFile, `###Request ${key}:\n`);
+            for (const match of matches) {
+                fs.appendFileSync(outputFile, `* ${match.groups[key]}\n`);
+            }
+            fs.appendFileSync(outputFile, '\n');
+        }
+    });
+}
+
+//TODO get privileges
 //TODO handle no match cases
+//TODO be able to inject explanation of a chosen request field - e.g. req.body.status needs an explanation that it is clear, saved, etc. - not mandatory since some names are obvious enough
