@@ -20,12 +20,10 @@
     "projectName": "QPlan",
     "projectDescription": "My project",
     "tag": "@express-doc-generator",
+    "endTag": "end",
     "expressObject": "app",
     "requestObject": "req",
-    "startTag": "start",
-    "endTag": "end",
-    "descriptionTag": "description",
-    "files": "C:/Users/cookc/Desktop/Code/qplan/back-end/server/routing/*Routing.js"
+    "files": "C:/Users/cookc/Desktop/Code/qplan/back-end/server/routing/coursesRouting.js"
   },
   "eslintConfig": {
     "env": {

@@ -22,8 +22,6 @@ const expressObject = configJson.expressObject || 'app';
 const requestObject = configJson.requestObject || 'req';
 const httpMethods = ['get', 'post', 'put', 'delete']; // HTTP methods to parse out of routing of Express app
 const requestFields = ['body', 'params', 'query']; // Request fields to parse out of routing of Express app
-const startTag = configJson.startTag || 'start';
-const descriptionTag = configJson.descriptionTag + ' ' || 'description '; // expect a space between 'description' and the text
 const endTag = configJson.endTag || 'end';
 const anyChar = '[\\s\\S]';
 let globs = configJson.files;
@@ -43,8 +41,8 @@ globs.forEach(path => {
     files.forEach(file => {
         const fileContent = fs.readFileSync(file, fsFileFormat);
 
-        const apiRegex = new RegExp(`${tag} ${startTag}(?<api>${anyChar}*?)${tag} ${endTag}`, 'ig');
-        const descriptionRegex = new RegExp(`${tag} ${descriptionTag}(?<description>${anyChar}*?)$`, 'im');
+        const apiRegex = new RegExp(`(?<api>${tag}${anyChar}*?)${tag} ${endTag}`, 'ig');
+        const descriptionRegex = new RegExp(`${tag} (?<description>${anyChar}*?)$`, 'im');
         const methodRegex = new RegExp(`${expressObject}\.(?<method>${httpMethods.join('|')})`, 'i');
         const requestFieldsRegexes = {};
         requestFields.forEach(field => {
@@ -85,5 +83,4 @@ globs.forEach(path => {
 
 //TODO get the route
 //TODO get privileges?
-//TODO after @express-api-doc start allow setting express and request object names
 //TODO handle no match cases
