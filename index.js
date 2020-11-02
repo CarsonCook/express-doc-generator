@@ -14,12 +14,12 @@ const projectName = 'QPlan Back End';
 const projectDescription = 'My project';
 const outputFile = 'API Documentation.md';
 const tag = configJson.tag || '@express-doc-generator';
-const expressObject = configJson.expressObject || 'app';
-const requestObject = configJson.requestObject || 'req';
+const expressObject = configJson.expressObject || 'asdf';
+const requestObject = configJson.requestObject || 'asdf';
 const httpMethods = ['get', 'post', 'put', 'delete']; // HTTP methods to parse out of routing of Express app
 const requestFields = ['body', 'params', 'query']; // Request fields to parse out of routing of Express app
 const startTag = configJson.startTag || 'start';
-const descriptionTag = configJson.descriptionTag || 'description '; // expect a space between 'description' and the text
+const descriptionTag = configJson.descriptionTag + ' ' || 'description '; // expect a space between 'description' and the text
 const endTag = configJson.endTag || 'end';
 const anyChar = '[\\s\\S]';
 const files = configJson.files || [
@@ -75,7 +75,6 @@ files.forEach(file => {
 
 //TODO get the route
 //TODO handle directory locations and specific files
-//TODO config for app, request body, files, matching route
 //TODO get privileges?
 //TODO after @express-api-doc start allow setting express and request object names
 //TODO handle no match cases
