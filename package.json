@@ -1,7 +1,6 @@
 {
   "name": "express-doc-generator",
   "version": "0.1.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "lint": "eslint \"**/*.js\" --fix"
@@ -63,5 +62,14 @@
     "ignorePatterns": [
       "./**/node_modules/**/*"
     ]
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarsonCook/express-doc-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CarsonCook/express-doc-generator/issues"
+  },
+  "homepage": "https://github.com/CarsonCook/express-doc-generator#readme",
+  "description": ""
 }
