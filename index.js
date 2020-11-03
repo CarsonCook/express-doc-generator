@@ -5,10 +5,10 @@ const fsFileFormat = 'utf8';
 
 let configJson = {};
 try {
-    configJson = JSON.parse(fs.readFileSync('./express-doc-generator.json', fsFileFormat));
+    configJson = JSON.parse(fs.readFileSync(__dirname + '/express-doc-generator.json', fsFileFormat));
 } catch (e) {
     try {
-        configJson = JSON.parse(fs.readFileSync('./package.json', fsFileFormat)).expressDocGenerator || {};
+        configJson = JSON.parse(fs.readFileSync(__dirname + '/package.json', fsFileFormat)).expressDocGenerator || {};
     } catch (e) {
         console.err(`Could not read configuration file: ${e}`);
     }
@@ -23,15 +23,14 @@ const requestObject = configJson.requestObject || 'req';
 const httpMethods = ['get', 'post', 'put', 'delete']; // HTTP methods to parse out of routing of Express app
 const requestFields = ['body', 'params', 'query']; // Request fields to parse out of routing of Express app
 const endTag = configJson.endTag || 'end';
-const anyChar = '[\\s\\S]';
-let globs = configJson.files;
 
-if (!globs) {
-    throw new Error('Cannot generate documentation. No glob patterns provided');
-}
-if (!Array.isArray(globs)) {
-    globs = [globs];
-}
+const globs = setGlob();
+const suppliersConfig = configJson.suppliers;
+const suppliers = setSuppliers();
+const routeSupplier = setSupplier('route');
+const privilegeSupplier = setSupplier('privilege');
+
+const anyChar = '[\\s\\S]';
 
 fs.writeFileSync(outputFile, `#${projectName}\n${projectDescription}\n`); // Write to file instead of append to overwrite past data
 
@@ -55,6 +54,8 @@ globs.forEach(path => {
             captureEndpoint(api);
             captureDescription(api);
             captureRequestFields(api);
+            routeSupplier(api);
+            console.log(privilegeSupplier(api));
         }
     });
 });
@@ -93,5 +94,25 @@ function captureRequestFields(api) {
     });
 }
 
-//TODO get privileges
+function setGlob() {
+    const globs = configJson.files;
+    if (!globs) {
+        throw new Error('Cannot generate documentation. No glob patterns provided');
+    }
+    if (!Array.isArray(globs)) {
+        return [globs];
+    }
+    return globs;
+}
+
+function setSuppliers() {
+    return suppliersConfig && suppliersConfig.file ? require(suppliersConfig.file) : null;
+}
+
+function setSupplier(type) {
+    return suppliers && suppliersConfig[type] ? suppliers[suppliersConfig[type]] : _ => {
+        return null;
+    };
+}
+
 //TODO be able to inject explanation of a chosen request field - e.g. req.body.status needs an explanation that it is clear, saved, etc. - not mandatory since some names are obvious enough

@@ -23,7 +23,12 @@
     "endTag": "end",
     "expressObject": "app",
     "requestObject": "req",
-    "files": "C:/Users/cookc/Desktop/Code/qplan/back-end/server/routing/coursesRouting.js"
+    "files": "C:/Users/cookc/Desktop/Code/qplan/back-end/server/routing/coursesRouting.js",
+    "suppliers": {
+      "file": "C:/Users/cookc/Desktop/Code/qplan/back-end/suppliers.js",
+      "route": "routeSupplier",
+      "privilege": "privilegeSupplier"
+    }
   },
   "eslintConfig": {
     "env": {

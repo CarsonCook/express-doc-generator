@@ -4,3 +4,5 @@ node_modules
 express-doc-generator.json
 
 API Documentation.md
+
+../qplan/back-end/supplier.js
