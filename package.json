@@ -15,20 +15,6 @@
     "eslint": "^7.12.1",
     "eslint-config-google": "^0.14.0"
   },
-  "expressDocGenerator": {
-    "projectName": "QPlan",
-    "projectDescription": "My project",
-    "tag": "@express-doc-generator",
-    "endTag": "end",
-    "expressObject": "app",
-    "requestObject": "req",
-    "files": "C:/Users/cookc/Desktop/Code/qplan/back-end/server/routing/coursesRouting.js",
-    "suppliers": {
-      "file": "C:/Users/cookc/Desktop/Code/qplan/back-end/suppliers.js",
-      "route": "routeSupplier",
-      "privilege": "privilegeSupplier"
-    }
-  },
   "eslintConfig": {
     "env": {
       "browser": true,

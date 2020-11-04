@@ -3,17 +3,14 @@ const glob = require('glob');
 
 const fsFileFormat = 'utf8';
 
+const configFileName = 'expressDocGeneratorConfig.js';
 let configJson = {};
 try {
-    configJson = JSON.parse(fs.readFileSync(__dirname + '/express-doc-generator.json', fsFileFormat));
+    configJson = require(process.cwd() + `/${configFileName}`);
 } catch (e) {
-    try {
-        configJson = JSON.parse(fs.readFileSync(__dirname + '/package.json', fsFileFormat)).expressDocGenerator || {};
-    } catch (e) {
-        console.err(`Could not read configuration file: ${e}`);
-    }
+    throw new Error(`Could not read ${configFileName} file: ${e}`);
 }
-
+console.log(configJson);
 const projectName = configJson.projectName;
 const projectDescription = configJson.projectDescription;
 const outputFile = configJson.outputFile || 'API Documentation.md';
@@ -25,8 +22,7 @@ const requestFields = ['body', 'params', 'query']; // Request fields to parse ou
 const endTag = configJson.endTag || 'end';
 
 const globs = setGlob();
-const suppliersConfig = configJson.suppliers;
-const suppliers = setSuppliers();
+const suppliersConfig = configJson.suppliers || {};
 const routeSupplier = setSupplier('route');
 const privilegeSupplier = setSupplier('privilege');
 
@@ -111,18 +107,13 @@ function setGlob() {
     return globs;
 }
 
-function setSuppliers() {
-    return suppliersConfig && suppliersConfig.file ? require(suppliersConfig.file) : null;
-}
-
 function setSupplier(type) {
-    return suppliers && suppliersConfig[type] ? suppliers[suppliersConfig[type]] : _ => {
+    return suppliersConfig[type] ? suppliersConfig[type] : _ => {
         return null;
     };
 }
 
 //TODO be able to inject explanation of a chosen request field - e.g. req.body.status needs an explanation that it is clear, saved, etc. - not mandatory since some names are obvious enough
 //TODO make this a cmd line command
-//TODO make it a js file with module.exports to have config, and function embedded right in the file
 //TODO keep file strings, output only after no errors in parsing it out
 //TODO route supplier default to first string literal starting with /
