@@ -2,6 +2,7 @@ const fs = require('fs');
 const glob = require('glob');
 
 const fsFileFormat = 'utf8';
+const anyChar = '[\\s\\S]';
 
 const configFileName = 'expressDocGeneratorConfig.js';
 let configJson = {};
@@ -38,9 +39,7 @@ const privilegeSupplier = suppliersConfig.privilege ? suppliersConfig.privilege 
     return null;
 };
 
-const anyChar = '[\\s\\S]';
-
-fs.writeFileSync(outputFile, `#${projectName}\n${projectDescription}\n`); // Write to file instead of append to overwrite past data
+const outputLines = [];
 
 const apiRegex = new RegExp(`(?<api>${tag}${anyChar}*?${tag} ${endTag})`, 'ig');
 const methodRegex = new RegExp(`${expressObject}\.(?<method>${httpMethods.join('|')})`, 'i');
@@ -67,12 +66,14 @@ globs.forEach(path => {
     });
 });
 
+outputToFile();
+
 function captureEndpoint(api) {
     const methodMatch = api.match(methodRegex);
     const route = routeSupplier(api);
     if (methodMatch) {
         const {groups: {method}} = methodMatch;
-        fs.appendFileSync(outputFile, `##${method.toUpperCase()} ${route}\n`);
+        outputLines.push(`##${method.toUpperCase()} ${route}\n`);
     } else {
         throw new Error(`Could not read HTTP method from Express Object '${expressObject}' for API:
         ${api}
@@ -84,7 +85,7 @@ function captureDescription(api) {
     const descriptionMatch = api.match(descriptionRegex);
     if (descriptionMatch) {
         const {groups: {description}} = descriptionMatch;
-        fs.appendFileSync(outputFile, `${description}\n\n`);
+        outputLines.push(`${description}\n\n`);
     }
 }
 
@@ -92,11 +93,11 @@ function captureRequestFields(api) {
     Object.keys(requestFieldsRegexes).forEach(key => {
         const matches = [...api.matchAll(requestFieldsRegexes[key])];
         if (matches.length > 0) {
-            fs.appendFileSync(outputFile, `###Request ${key}:\n`);
+            outputLines.push(`###Request ${key}:\n`);
             for (const match of matches) {
-                fs.appendFileSync(outputFile, `* ${match.groups[key]}\n`);
+                outputLines.push(`* ${match.groups[key]}\n`);
             }
-            fs.appendFileSync(outputFile, '\n');
+            outputLines.push('\n');
         }
     });
 }
@@ -104,7 +105,7 @@ function captureRequestFields(api) {
 function captureSuppliedFields(api) {
     const privilege = privilegeSupplier(api);
     if (privilege !== undefined && privilege !== null) {
-        fs.appendFileSync(outputFile, `Privilege required to access: ${privilege}\n`);
+        outputLines.push(`Privilege required to access: ${privilege}\n`);
     }
 }
 
@@ -119,6 +120,16 @@ function setGlob() {
     return globs;
 }
 
+function outputToFile() {
+    try {
+        fs.writeFileSync(outputFile, `#${projectName}\n${projectDescription}\n`); // Write to file instead of append to overwrite past data
+        for (const line of outputLines) {
+            fs.appendFileSync(outputFile, line);
+        }
+    } catch (e) {
+        throw new Error(`Could not output documentation to ${outputFile}. Error: ${e}`);
+    }
+}
+
 //TODO be able to inject explanation of a chosen request field - e.g. req.body.status needs an explanation that it is clear, saved, etc. - not mandatory since some names are obvious enough
 //TODO make this a cmd line command
-//TODO keep file strings, output only after no errors in parsing it out
