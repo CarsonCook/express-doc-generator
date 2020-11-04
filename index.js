@@ -54,15 +54,14 @@ globs.forEach(path => {
             captureEndpoint(api);
             captureDescription(api);
             captureRequestFields(api);
-            routeSupplier(api);
-            console.log(privilegeSupplier(api));
+            captureSuppliedFields(api);
         }
     });
 });
 
 function captureEndpoint(api) {
     const methodMatch = api.match(methodRegex);
-    const route = 'route'; // TODO get the route
+    const route = routeSupplier(api);
     if (methodMatch) {
         const {groups: {method}} = methodMatch;
         fs.appendFileSync(outputFile, `##${method.toUpperCase()} ${route}\n`);
@@ -77,7 +76,7 @@ function captureDescription(api) {
     const descriptionMatch = api.match(descriptionRegex);
     if (descriptionMatch) {
         const {groups: {description}} = descriptionMatch;
-        fs.appendFileSync(outputFile, `${description}\n`);
+        fs.appendFileSync(outputFile, `${description}\n\n`);
     }
 }
 
@@ -92,6 +91,13 @@ function captureRequestFields(api) {
             fs.appendFileSync(outputFile, '\n');
         }
     });
+}
+
+function captureSuppliedFields(api) {
+    const privilege = privilegeSupplier(api);
+    if (privilege !== undefined && privilege !== null) {
+        fs.appendFileSync(outputFile, `Privilege required to access: ${privilege}\n`);
+    }
 }
 
 function setGlob() {
@@ -116,3 +122,7 @@ function setSupplier(type) {
 }
 
 //TODO be able to inject explanation of a chosen request field - e.g. req.body.status needs an explanation that it is clear, saved, etc. - not mandatory since some names are obvious enough
+//TODO make this a cmd line command
+//TODO make it a js file with module.exports to have config, and function embedded right in the file
+//TODO keep file strings, output only after no errors in parsing it out
+//TODO route supplier default to first string literal starting with /
