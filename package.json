@@ -2,6 +2,9 @@
   "name": "express-doc-generator",
   "version": "0.1.0",
   "main": "index.js",
+  "bin": {
+    "express-doc-generator": "./index.js"
+  },
   "scripts": {
     "lint": "eslint \"**/*.js\" --fix"
   },

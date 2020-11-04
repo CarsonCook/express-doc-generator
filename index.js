@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 const glob = require('glob');
 
@@ -132,4 +134,3 @@ function outputToFile() {
 }
 
 //TODO be able to inject explanation of a chosen request field - e.g. req.body.status needs an explanation that it is clear, saved, etc. - not mandatory since some names are obvious enough
-//TODO make this a cmd line command
