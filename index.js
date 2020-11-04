@@ -10,7 +10,7 @@ try {
 } catch (e) {
     throw new Error(`Could not read ${configFileName} file: ${e}`);
 }
-console.log(configJson);
+
 const projectName = configJson.projectName;
 const projectDescription = configJson.projectDescription;
 const outputFile = configJson.outputFile || 'API Documentation.md';
@@ -23,8 +23,20 @@ const endTag = configJson.endTag || 'end';
 
 const globs = setGlob();
 const suppliersConfig = configJson.suppliers || {};
-const routeSupplier = setSupplier('route');
-const privilegeSupplier = setSupplier('privilege');
+
+const routeRegex = new RegExp(`'(?<route>/.*?)'`, 'im');
+const routeSupplier = suppliersConfig.route ? suppliersConfig.route : api => {
+    const match = api.match(routeRegex);
+    if (match) {
+        const {groups: {route}} = match;
+        return route;
+    }
+    return null;
+};
+
+const privilegeSupplier = suppliersConfig.privilege ? suppliersConfig.privilege : _ => {
+    return null;
+};
 
 const anyChar = '[\\s\\S]';
 
@@ -107,13 +119,6 @@ function setGlob() {
     return globs;
 }
 
-function setSupplier(type) {
-    return suppliersConfig[type] ? suppliersConfig[type] : _ => {
-        return null;
-    };
-}
-
 //TODO be able to inject explanation of a chosen request field - e.g. req.body.status needs an explanation that it is clear, saved, etc. - not mandatory since some names are obvious enough
 //TODO make this a cmd line command
 //TODO keep file strings, output only after no errors in parsing it out
-//TODO route supplier default to first string literal starting with /
