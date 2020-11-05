@@ -14,27 +14,27 @@ try {
     throw new Error(`Could not read ${configFileName} file: ${e}`);
 }
 
-const projectName = configJson.projectName;
-const projectDescription = configJson.projectDescription;
+const projectName = configJson.projectName || 'API Project';
+const projectDescription = configJson.projectDescription || '';
 const outputFile = configJson.outputFile || 'API Documentation.md';
 const tag = configJson.tag || '@express-doc-generator';
 const expressObject = configJson.expressObject || 'app';
 const requestObject = configJson.requestObject || 'req';
-const httpMethods = ['get', 'post', 'put', 'delete']; // HTTP methods to parse out of routing of Express app
-const requestFields = ['body', 'params', 'query']; // Request fields to parse out of routing of Express app
+const httpMethods = configJson.httpMethods || ['get', 'post', 'put', 'delete'];
+const requestFields = configJson.requestFields || ['body', 'params', 'query'];
 const endTag = configJson.endTag || 'end';
 
 const globs = setGlob();
 const suppliersConfig = configJson.suppliers || {};
 
-const routeRegex = new RegExp(`'(?<route>/.*?)'`, 'im');
+const defaultRouteRegex = new RegExp(`'(?<route>/.*?)'`, 'im');
 const routeSupplier = suppliersConfig.route ? suppliersConfig.route : api => {
-    const match = api.match(routeRegex);
+    const match = api.match(defaultRouteRegex);
     if (match) {
         const {groups: {route}} = match;
         return route;
     }
-    return null;
+    throw Error(`Could not parse route using default method for API:\n${api}\n`);
 };
 
 const privilegeSupplier = suppliersConfig.privilege ? suppliersConfig.privilege : _ => {
@@ -77,9 +77,8 @@ function captureEndpoint(api) {
         const {groups: {method}} = methodMatch;
         outputLines.push(`##${method.toUpperCase()} ${route}\n`);
     } else {
-        throw new Error(`Could not read HTTP method from Express Object '${expressObject}' for API:
-        ${api}
-        `);
+        outputLines.push(`## ${route}\n`);
+        console.warn(`Did not read API method for API:\n${api}`);
     }
 }
 
