@@ -6,23 +6,24 @@ const glob = require('glob');
 const fsFileFormat = 'utf8';
 const anyChar = '[\\s\\S]';
 
+const tag = '@express-doc-generator';
+const endTag = 'end';
 const configFileName = 'expressDocGeneratorConfig.js';
 let configJson = {};
+
 try {
     configJson = require(process.cwd() + `/${configFileName}`);
 } catch (e) {
     throw new Error(`Could not read ${configFileName} file: ${e}`);
 }
 
-const projectName = configJson.projectName || 'API Project';
-const projectDescription = configJson.projectDescription || '';
+const projectName = configJson.name || 'API Project';
+const projectDescription = configJson.description || '';
 const outputFile = configJson.outputFile || 'API Documentation.md';
-const tag = configJson.tag || '@express-doc-generator';
 const expressObject = configJson.expressObject || 'app';
 const requestObject = configJson.requestObject || 'req';
 const httpMethods = configJson.httpMethods || ['get', 'post', 'put', 'delete'];
 const requestFields = configJson.requestFields || ['body', 'params', 'query'];
-const endTag = configJson.endTag || 'end';
 const fieldDescriptions = configJson.descriptions || {};
 
 const globs = setGlob();
