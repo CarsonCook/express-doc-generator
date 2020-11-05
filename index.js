@@ -9,13 +9,9 @@ const anyChar = '[\\s\\S]';
 const tag = '@express-doc-generator';
 const endTag = 'end';
 const configFileName = 'expressDocGeneratorConfig.js';
-let configJson = {};
 
-try {
-    configJson = require(process.cwd() + `/${configFileName}`);
-} catch (e) {
-    throw new Error(`Could not read ${configFileName} file: ${e}`);
-}
+const configJson = setConfig();
+const globs = setGlob();
 
 const projectName = configJson.name || 'API Project';
 const projectDescription = configJson.description || '';
@@ -25,8 +21,6 @@ const requestObject = configJson.requestObject || 'req';
 const httpMethods = configJson.httpMethods || ['get', 'post', 'put', 'delete'];
 const requestFields = configJson.requestFields || ['body', 'params', 'query'];
 const fieldDescriptions = configJson.descriptions || {};
-
-const globs = setGlob();
 const suppliersConfig = configJson.suppliers || {};
 
 const defaultRouteRegex = new RegExp(`'(?<route>/.*?)'`, 'im');
@@ -116,6 +110,14 @@ function captureSuppliedFields(api) {
     }
 }
 
+function setConfig() {
+    try {
+        return require(process.cwd() + `/${configFileName}`);
+    } catch (e) {
+        throw new Error(`Could not require ${configFileName} file: ${e}`);
+    }
+}
+
 function setGlob() {
     const globs = configJson.files;
     if (!globs) {
@@ -137,5 +139,3 @@ function outputToFile() {
         throw new Error(`Could not output documentation to ${outputFile}. Error: ${e}`);
     }
 }
-
-// TODO consider implementing algo so don't need end tag
