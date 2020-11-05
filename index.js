@@ -23,12 +23,13 @@ const requestObject = configJson.requestObject || 'req';
 const httpMethods = configJson.httpMethods || ['get', 'post', 'put', 'delete'];
 const requestFields = configJson.requestFields || ['body', 'params', 'query'];
 const endTag = configJson.endTag || 'end';
+const fieldDescriptions = configJson.descriptions || {};
 
 const globs = setGlob();
 const suppliersConfig = configJson.suppliers || {};
 
 const defaultRouteRegex = new RegExp(`'(?<route>/.*?)'`, 'im');
-const routeSupplier = suppliersConfig.route ? suppliersConfig.route : api => {
+const routeSupplier = suppliersConfig.route ? suppliersConfig.route : (api) => {
     const match = api.match(defaultRouteRegex);
     if (match) {
         const {groups: {route}} = match;
@@ -37,24 +38,24 @@ const routeSupplier = suppliersConfig.route ? suppliersConfig.route : api => {
     throw Error(`Could not parse route using default method for API:\n${api}\n`);
 };
 
-const privilegeSupplier = suppliersConfig.privilege ? suppliersConfig.privilege : _ => {
+const privilegeSupplier = suppliersConfig.privilege ? suppliersConfig.privilege : (_) => {
     return null;
 };
 
 const outputLines = [];
 
 const apiRegex = new RegExp(`(?<api>${tag}${anyChar}*?${tag} ${endTag})`, 'ig');
-const methodRegex = new RegExp(`${expressObject}\.(?<method>${httpMethods.join('|')})`, 'i');
+const methodRegex = new RegExp(`${expressObject}.(?<method>${httpMethods.join('|')})`, 'i');
 const descriptionRegex = new RegExp(`${tag} (?<description>${anyChar}*?)$`, 'im');
 const requestFieldsRegexes = {};
-requestFields.forEach(field => {
-    requestFieldsRegexes[field] = (new RegExp(`${requestObject}\.${field}\.(?<${field}>[\\w\\d_\\-$]*)`, 'ig'));
+requestFields.forEach((field) => {
+    requestFieldsRegexes[field] = (new RegExp(`${requestObject}\.${field}.(?<${field}>[\\w\\d_\\-$]*)`, 'ig'));
 });
 
-globs.forEach(path => {
+globs.forEach((path) => {
     const files = glob.sync(path);
 
-    files.forEach(file => {
+    files.forEach((file) => {
         const fileContent = fs.readFileSync(file, fsFileFormat);
         const matches = fileContent.matchAll(apiRegex);
 
@@ -91,12 +92,16 @@ function captureDescription(api) {
 }
 
 function captureRequestFields(api) {
-    Object.keys(requestFieldsRegexes).forEach(key => {
+    Object.keys(requestFieldsRegexes).forEach((key) => {
         const matches = [...api.matchAll(requestFieldsRegexes[key])];
         if (matches.length > 0) {
             outputLines.push(`###Request ${key}:\n`);
             for (const match of matches) {
-                outputLines.push(`* ${match.groups[key]}\n`);
+                const field = match.groups[key];
+                const description = fieldDescriptions[field];
+                let output = `* ${field}`;
+                output += description ? ` - ${description}\n` : '\n';
+                outputLines.push(output);
             }
             outputLines.push('\n');
         }
@@ -132,4 +137,4 @@ function outputToFile() {
     }
 }
 
-//TODO be able to inject explanation of a chosen request field - e.g. req.body.status needs an explanation that it is clear, saved, etc. - not mandatory since some names are obvious enough
+// TODO consider implementing algo so don't need end tag
