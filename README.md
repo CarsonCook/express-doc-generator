@@ -59,6 +59,7 @@ The following fields should be set in every configuration, unless the default va
 |:-----------:|:-----------:|:---------------------------------|
 |name         |'Api Project'|Name of the Express project.       |
 |description  |blank        |Description of the Express project.|
+|outputFile   |'API Documentation.md|The name of the markdown file that will be generated. Should end in `.md`.|
 |expressObject|`app`        |Name of the Express object. For example, in `app.get(...)` the Express object name is `app`.|
 |requestObject|`req`        |Name of the request object. For example, in `app.get('/',(req,res)=>{...})`, the request object name is `req`.|
 |httpMethods  |\['get','post','put','delete'\]|Array of http methods to be included in documentation.|
@@ -73,8 +74,9 @@ The following fields should be set in every configuration, unless the default va
 ```javascript
 const routes = require('./routes.js');
 {
-    name: 'QPlan',
+    name: 'My project',
     description: 'My project',
+    outputFile: 'my-file.md'
     expressObject: 'app',
     requestObject: 'req',
     httpMethods: ['get', 'post', 'put', 'delete'],
@@ -108,8 +110,8 @@ const routes = require('./routes.js');
         }
     },
     descriptions: {
-        status: 'can be x y or z',
-        name: 'name ya dummy'
+        status: 'the status',
+        name: 'the name'
     }
 }
 ```
