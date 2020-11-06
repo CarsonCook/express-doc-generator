@@ -1,6 +1,6 @@
 {
   "name": "express-doc-generator",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "index.js",
   "bin": {
     "express-doc-generator": "./index.js"
@@ -8,9 +8,23 @@
   "scripts": {
     "lint": "eslint \"**/*.js\" --fix"
   },
-  "keywords": [],
+  "description": "Generate documentation for the API endpoints of an Express application",
+  "keywords": [
+    "express",
+    "api",
+    "documentation",
+    "generate"
+  ],
   "author": "Carson Cook",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarsonCook/express-doc-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CarsonCook/express-doc-generator/issues"
+  },
+  "homepage": "https://github.com/CarsonCook/express-doc-generator#readme",
   "dependencies": {
     "glob": "^7.1.6"
   },
@@ -51,14 +65,5 @@
     "ignorePatterns": [
       "./**/node_modules/**/*"
     ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/CarsonCook/express-doc-generator.git"
-  },
-  "bugs": {
-    "url": "https://github.com/CarsonCook/express-doc-generator/issues"
-  },
-  "homepage": "https://github.com/CarsonCook/express-doc-generator#readme",
-  "description": ""
+  }
 }
