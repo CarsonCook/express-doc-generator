@@ -44,7 +44,7 @@ const methodRegex = new RegExp(`${expressObject}.(?<method>${httpMethods.join('|
 const descriptionRegex = new RegExp(`${tag} (?<description>${anyChar}*?)$`, 'im');
 const requestFieldsRegexes = {};
 requestFields.forEach((field) => {
-    requestFieldsRegexes[field] = (new RegExp(`${requestObject}\.${field}.(?<${field}>[\\w\\d_\\-$]*)`, 'ig'));
+    requestFieldsRegexes[field] = (new RegExp(`${requestObject}.${field}.(?<${field}>[\\w\\d_\\-$]*)`, 'ig'));
 });
 
 globs.forEach((path) => {
