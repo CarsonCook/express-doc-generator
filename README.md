@@ -1,8 +1,8 @@
-#express-doc-generator
+# express-doc-generator
 
 This npm package generates documentation for Express applications.
 
-##Usage
+## Usage
 
 Run `express-doc-generator` in a directory with `expressDocGeneratorConfig.js` defined.
 This will create a markdown file documenting your Express endpoints.
@@ -14,7 +14,7 @@ in the project, but they need to keep the standard naming convention.
 
 `expressDocGeneratorConfig.js` has required and optional parameters. Configuration documentation can be read below.
 
-###Example
+### Example
 
 The below code uses `@express-doc-generator <description>` to indicate where to start parsing documentation,
 and `@express-doc-generator end` to indicate where to stop parsing. This can be done multiple times in the same
@@ -35,23 +35,23 @@ file.
 Resulting documentation:
 
 ```markdown
-#API Project
+# API Project
 
 
-##GET /my-route
+## GET /my-route
 description get an engineering discipline's graduation requirements
 
-###Request params:
+### Request params:
 * discipline
 
 Privilege required to access: unprivileged
 ```
 
-##Configuration
+## Configuration
 
 `expressDocGeneratorConfig.js` must export an object using `module.exports = {...}`.
 
-##Configuration
+## Configuration
 
 The following fields should be set in every configuration, unless the default value can be used.
 
@@ -68,15 +68,15 @@ The following fields should be set in every configuration, unless the default va
 |suppliers|See [Suppliers section](#Suppliers)|Functions that provide custom matching criteria for scraping documentation. See [Suppliers section](#Suppliers).|
 |descriptions|`{}`|Object that supplies descriptions for request field values. For example, a descriptions value of `{name: 'the name'}` will supply a description in the documentation for `req.body.name`.|
 
-###Suppliers
+### Suppliers
 
-###Example
+### Example
 ```javascript
 const routes = require('./routes.js');
-{
+return {
     name: 'My project',
     description: 'My project',
-    outputFile: 'my-file.md'
+    outputFile: 'my-file.md',
     expressObject: 'app',
     requestObject: 'req',
     httpMethods: ['get', 'post', 'put', 'delete'],
